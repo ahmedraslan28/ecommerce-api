@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 from uuid import uuid4
 # Create your models here.
@@ -32,6 +32,7 @@ class Collection(models.Model):
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
+    slug = models.SlugField()
     description = models.TextField(null=True, blank=True)
     unit_price = models.DecimalField(
         max_digits=6,
@@ -134,4 +135,6 @@ class Review(models.Model):
         Product, on_delete=models.CASCADE, related_name='reviews')
     name = models.CharField(max_length=255)
     description = models.TextField()
+    rate = models.SmallIntegerField(
+        validators=[MinValueValidator(1), MinValueValidator(5)])
     date = models.DateField(auto_now_add=True)
