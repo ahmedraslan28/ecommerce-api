@@ -4,8 +4,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
-from .models import Product, Collection
-from .serializers import ProductSerializer, CollectionSerializer
+from .models import (Product, Collection, Review)
+from .serializers import (
+    ProductSerializer, CollectionSerializer, ReviewSerializer)
 # Create your views here.
 
 
@@ -34,7 +35,7 @@ class CollectionList(ListCreateAPIView):
 
 
 class CollectionDetail(RetrieveUpdateDestroyAPIView):
-    queryset = queryset = Collection.objects.annotate(
+    queryset = Collection.objects.annotate(
         product_count=Count('products')).all()
 
     serializer_class = CollectionSerializer
@@ -48,7 +49,11 @@ class CollectionDetail(RetrieveUpdateDestroyAPIView):
 
 
 class ProductReviewList(ListCreateAPIView):
-    pass
+    def get_queryset(self):
+        product_id = self.kwargs['pk']
+        return Review.objects.filter(product=product_id)
+
+    serializer_class = ReviewSerializer
 
 
 class ProductReviewDetail(RetrieveUpdateDestroyAPIView):
