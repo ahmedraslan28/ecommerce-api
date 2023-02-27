@@ -1,8 +1,16 @@
 from django.urls import path
-from .views import product_list, product_detail, collection_list, collection_detail
+from .views import (ProductList, ProductDetail, CollectionList,
+                    CollectionDetail, ProductReviewList, ProductReviewDetail)
 urlpatterns = [
-    path('products/', product_list, name="product-list"),
-    path('products/<int:pk>/', product_detail, name="product-detail"),
-    path('collections/', collection_list, name="collection-list"),
-    path('collections/<int:pk>/', collection_detail, name="collection-detail"),
+    path('products/', ProductList.as_view(), name="product-list"),
+    path('products/<int:pk>/', ProductDetail.as_view(), name="product-detail"),
+
+    path('collections/', CollectionList.as_view(), name="collection-list"),
+    path('collections/<int:pk>/', CollectionDetail.as_view(),
+         name="collection-detail"),
+
+    path('products/<int:pk>/reviews/',
+         ProductReviewList.as_view(), name="product-review-list"),
+    path('products/<int:pk>/reviews/<int:review_pk>/',
+         ProductReviewDetail.as_view(), name="product-review-detail"),
 ]
