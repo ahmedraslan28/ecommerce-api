@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.http import Http404
 from django.db.models.aggregates import Count
 from rest_framework import status
 from rest_framework.response import Response
@@ -51,7 +52,9 @@ class CollectionDetail(RetrieveUpdateDestroyAPIView):
 class ProductReviewList(ListCreateAPIView):
     def get_queryset(self):
         product_id = self.kwargs['pk']
-        return Review.objects.filter(product=product_id)
+        if Product.objects.filter(pk=product_id).exists():
+            return Review.objects.filter(product=product_id)
+        raise Http404
 
     serializer_class = ReviewSerializer
 
