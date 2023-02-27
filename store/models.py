@@ -1,6 +1,5 @@
 from django.db import models
 from django.conf import settings
-from django.contrib import admin
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 
@@ -136,5 +135,5 @@ class Review(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     rate = models.SmallIntegerField(
-        validators=[MinValueValidator(1), MinValueValidator(5)])
+        validators=[MinValueValidator(1), MaxValueValidator(5)])
     date = models.DateField(auto_now_add=True)
