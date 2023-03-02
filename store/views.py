@@ -1,18 +1,26 @@
 from django.shortcuts import get_object_or_404
 from django.db.models.aggregates import Count
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import (Product, Collection, Review)
+##############################################################
+
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.response import Response
+from rest_framework import status
+
+##############################################################
+
 from .serializers import (
     ProductSerializer, CollectionSerializer, ReviewSerializer)
-# Create your views here.
+from .models import (Product, Collection, Review)
+from .filters import ProductFilter
 
 
 class ProductList(ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ProductFilter
 
 
 class ProductDetail(RetrieveUpdateDestroyAPIView):
