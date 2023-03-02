@@ -11,6 +11,6 @@ urlpatterns = [
 
     path('products/<int:pk>/reviews/',
          ProductReviewList.as_view(), name="product-review-list"),
-    path('products/<int:pk>/reviews/<int:review_pk>/',
+    path('products/<int:product_id>/reviews/<int:pk>/',
          ProductReviewDetail.as_view(), name="product-review-detail"),
 ]
