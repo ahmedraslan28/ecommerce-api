@@ -52,11 +52,13 @@ class CollectionDetail(RetrieveUpdateDestroyAPIView):
 class ProductReviewList(ListCreateAPIView):
     def get_queryset(self):
         product_id = self.kwargs['pk']
-        if Product.objects.filter(pk=product_id).exists():
-            return Review.objects.filter(product=product_id)
-        raise Http404
+        get_object_or_404(Product, pk=product_id)
+        return Review.objects.filter(product=product_id)
 
     serializer_class = ReviewSerializer
+
+    def get_serializer_context(self):
+        return {"product_id": self.kwargs["pk"]}
 
 
 class ProductReviewDetail(RetrieveUpdateDestroyAPIView):

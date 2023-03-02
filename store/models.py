@@ -44,7 +44,7 @@ class Product(models.Model):
     promotions = models.ManyToManyField(Promotion, blank=True)
 
     def __str__(self) -> str:
-        return self.title
+        return self.title + "   ...... id : " + str(self.id)
 
     class Meta:
         ordering = ['title']
@@ -137,3 +137,6 @@ class Review(models.Model):
     rate = models.SmallIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)])
     date = models.DateField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return self.description + ", product_id = " + str(self.product_id)
