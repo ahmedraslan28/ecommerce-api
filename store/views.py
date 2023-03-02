@@ -4,9 +4,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 ##############################################################
 
+from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.filters import SearchFilter, OrderingFilter
 
 ##############################################################
@@ -15,14 +15,17 @@ from .serializers import (
     ProductSerializer, CollectionSerializer, ReviewSerializer)
 from .models import (Product, Collection, Review)
 from .filters import ProductFilter
+from .pagination import DefaultPagination
 
 
 class ProductList(ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    pagination_class = DefaultPagination
     filterset_class = ProductFilter
     search_fields = ['title', 'description']
+    ordering_fields = ['unit_price']
 
 
 class ProductDetail(RetrieveUpdateDestroyAPIView):
