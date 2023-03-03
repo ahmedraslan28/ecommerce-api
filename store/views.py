@@ -6,7 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import status
 from rest_framework.generics import (
-    ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView)
+    ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView, RetrieveDestroyAPIView)
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter, OrderingFilter
 
@@ -84,3 +84,8 @@ class ProductReviewDetail(RetrieveUpdateDestroyAPIView):
 class CartCreate(CreateAPIView):
     serializer_class = CartSerializer
     queryset = Cart.objects.all()
+
+
+class CartRetrieve(RetrieveDestroyAPIView):
+    serializer_class = CartSerializer
+    queryset = Cart.objects.prefetch_related('items__product').all()
