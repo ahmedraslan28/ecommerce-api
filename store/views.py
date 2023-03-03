@@ -17,7 +17,8 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 
 from .serializers import (
     ProductSerializer, CollectionSerializer, ReviewSerializer,
-    CartSerializer, CartItemSerializer, AddCartItemSerializer)
+    CartSerializer, CartItemSerializer, AddCartItemSerializer,
+    UpdateCartItemSerializer)
 from .models import (Product, Collection, Review, Cart, CartItem)
 from .filters import ProductFilter
 from .pagination import DefaultPagination
@@ -119,3 +120,14 @@ class CartItemDetail(APIView):
         obj = get_object_or_404(CartItem, pk=pk, cart_id=cart_id)
         serializer = CartItemSerializer(obj)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request, cart_id, pk):
+        obj = get_object_or_404(CartItem, pk=pk, cart_id=cart_id)
+        serializer = UpdateCartItemSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        obj.quantity = request.data.get('quantity')
+        obj.save()
+        return Response(serializer.data)
+
+    def delete(self, request, cart_id, pk):
+        obj = get_object_or_404(CartItem, pk=pk, cart_id=cart_id)
