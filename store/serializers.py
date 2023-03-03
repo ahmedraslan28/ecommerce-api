@@ -71,9 +71,11 @@ class AddCartItemSerializer(serializers.ModelSerializer):
         fields = ['id', 'product_id', 'quantity']
 
     def save(self, **kwargs):
+
+        validated_data = {**self.validated_data}
         cart_id = self.context['cart_id']
-        product_id = self.validated_data['product_id']
-        quantity = self.validated_data['quantity']
+        product_id = validated_data['product_id']
+        quantity = validated_data['quantity']
         print(cart_id, " a7a ", quantity, " a7a ", product_id)
         try:
             cart_item = CartItem.objects.get(
