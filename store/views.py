@@ -16,7 +16,8 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 ##############################################################
 
 from .serializers import (
-    ProductSerializer, CollectionSerializer, ReviewSerializer, CartSerializer, CartItemSerializer)
+    ProductSerializer, CollectionSerializer, ReviewSerializer,
+    CartSerializer, CartItemSerializer, AddCartItemSerializer)
 from .models import (Product, Collection, Review, Cart, CartItem)
 from .filters import ProductFilter
 from .pagination import DefaultPagination
@@ -95,13 +96,22 @@ class CartRetrieve(RetrieveDestroyAPIView):
 
 
 class CartItemsList(APIView):
-    def get(self, request, pk):
+    def get_queryset(self, pk):
         if Cart.objects.filter(pk=pk).exists():
-            obj = CartItem.objects.filter(
-                cart_id=pk).select_related('product')
-            serializer = CartItemSerializer(obj, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response({"details": "cart with given id not found"})
+            return CartItem.objects.filter(cart_id=pk).select_related('product')
+        raise Http404()
+
+    def get(self, request, pk):
+        obj = self.get_queryset(pk)
+        serializer = CartItemSerializer(obj, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, pk):
+        context = {"cart_id": pk}
+        serializer = AddCartItemSerializer(data=request.data, context=context)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 
 class CartItemDetail(APIView):
