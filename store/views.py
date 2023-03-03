@@ -5,15 +5,16 @@ from django_filters.rest_framework import DjangoFilterBackend
 ##############################################################
 
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import (
+    ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView)
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter, OrderingFilter
 
 ##############################################################
 
 from .serializers import (
-    ProductSerializer, CollectionSerializer, ReviewSerializer)
-from .models import (Product, Collection, Review)
+    ProductSerializer, CollectionSerializer, ReviewSerializer, CartSerializer)
+from .models import (Product, Collection, Review, Cart)
 from .filters import ProductFilter
 from .pagination import DefaultPagination
 
@@ -78,3 +79,8 @@ class ProductReviewDetail(RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Review.objects.filter(pk=self.kwargs['pk'], product=self.kwargs['product_id'])
+
+
+class CartCreate(CreateAPIView):
+    serializer_class = CartSerializer
+    queryset = Cart.objects.all()
