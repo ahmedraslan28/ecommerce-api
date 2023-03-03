@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.db.models.aggregates import Count
 from django_filters.rest_framework import DjangoFilterBackend
@@ -5,16 +6,18 @@ from django_filters.rest_framework import DjangoFilterBackend
 ##############################################################
 
 from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.generics import (
-    ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView, RetrieveDestroyAPIView)
+    ListCreateAPIView, RetrieveUpdateDestroyAPIView,
+    CreateAPIView, RetrieveDestroyAPIView, ListAPIView)
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter, OrderingFilter
 
 ##############################################################
 
 from .serializers import (
-    ProductSerializer, CollectionSerializer, ReviewSerializer, CartSerializer)
-from .models import (Product, Collection, Review, Cart)
+    ProductSerializer, CollectionSerializer, ReviewSerializer, CartSerializer, CartItemSerializer)
+from .models import (Product, Collection, Review, Cart, CartItem)
 from .filters import ProductFilter
 from .pagination import DefaultPagination
 
@@ -89,3 +92,17 @@ class CartCreate(CreateAPIView):
 class CartRetrieve(RetrieveDestroyAPIView):
     serializer_class = CartSerializer
     queryset = Cart.objects.prefetch_related('items__product').all()
+
+
+class CartItemsList(APIView):
+    def get(self, request, pk):
+        if Cart.objects.filter(pk=pk).exists():
+            obj = CartItem.objects.filter(
+                cart_id=pk).select_related('product')
+            serializer = CartItemSerializer(obj, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({"details": "cart with given id not found"})
+
+
+class CartItemDetail(APIView):
+    pass

@@ -46,7 +46,8 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class CartItemSerializer(serializers.ModelSerializer):
     product = SimpleProductSerializer(read_only=True)
-    total_price = serializers.SerializerMethodField(method_name='calc_price')
+    total_price = serializers.SerializerMethodField(
+        method_name='calc_price', read_only=True)
 
     class Meta:
         model = CartItem
