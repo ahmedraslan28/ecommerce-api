@@ -105,4 +105,7 @@ class CartItemsList(APIView):
 
 
 class CartItemDetail(APIView):
-    pass
+    def get(self, request, cart_id, pk):
+        obj = get_object_or_404(CartItem, pk=pk, cart_id=cart_id)
+        serializer = CartItemSerializer(obj)
+        return Response(serializer.data, status=status.HTTP_200_OK)
