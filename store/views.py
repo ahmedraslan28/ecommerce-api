@@ -18,7 +18,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from .serializers import (
     ProductSerializer, CollectionSerializer, ReviewSerializer,
     CartSerializer, CartItemSerializer, AddCartItemSerializer,
-    UpdateCartItemSerializer)
+    UpdateCartItemSerializer, UserSerializer)
 from .models import (Product, Collection, Review, Cart, CartItem)
 from .filters import ProductFilter
 from .pagination import DefaultPagination
@@ -155,4 +155,11 @@ class CartItemDetail(GenericAPIView):
 
 
 class UserRegister(GenericAPIView):
-    pass
+    serializer_class = UserSerializer
+    queryset = None
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)

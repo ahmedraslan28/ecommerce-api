@@ -1,8 +1,10 @@
-from django.contrib.auth import get_user_model as User
+from django.contrib.auth import get_user_model
 
 from decimal import Decimal
 from rest_framework import serializers
 from . models import Product, Collection, Review, Cart, CartItem
+
+User = get_user_model()
 
 
 class CollectionSerializer(serializers.ModelSerializer):
@@ -78,7 +80,6 @@ class AddCartItemSerializer(serializers.ModelSerializer):
         cart_id = self.context['cart_id']
         product_id = validated_data['product_id']
         quantity = validated_data['quantity']
-        print(cart_id, " a7a ", quantity, " a7a ", product_id)
         try:
             cart_item = CartItem.objects.get(
                 cart_id=cart_id, product_id=product_id)
@@ -117,6 +118,23 @@ class CartSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    repeat_password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
-        fields = []
+        fields = ['id', 'email', 'username', 'first_name',
+                  'last_name', 'password', 'repeat_password']
+
+    def validate(self, data):
+        if data['password'] != data['repeat_password']:
+            raise serializers.ValidationError("password do not match")
+        return data
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        validated_data.pop('repeat_password')
+        user = User.objects.create(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
