@@ -1,3 +1,5 @@
+from django.contrib.auth import get_user_model as User
+
 from decimal import Decimal
 from rest_framework import serializers
 from . models import Product, Collection, Review, Cart, CartItem
@@ -112,3 +114,9 @@ class CartSerializer(serializers.ModelSerializer):
         for item in instance.items.all():
             price += item.quantity * item.product.unit_price
         return price
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = []

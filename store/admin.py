@@ -1,8 +1,16 @@
 from django.contrib import admin
 from . import models
+from django.contrib.auth.hashers import make_password
 # Register your models here.
 
-admin.site.register(models.User)
+
+class UserAdmin(admin.ModelAdmin):
+    def save_model(self, request, obj, form, change):
+        obj.password = make_password(obj.password)
+        obj.save()
+
+
+admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Product)
 admin.site.register(models.Order)
 admin.site.register(models.Customer)

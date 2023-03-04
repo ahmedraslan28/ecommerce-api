@@ -152,3 +152,7 @@ class CartItemDetail(GenericAPIView):
         obj = get_object_or_404(CartItem, pk=pk, cart_id=cart_id)
         obj.delete()
         return Response({"message": "cart item deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+
+class UserRegister(GenericAPIView):
+    pass
