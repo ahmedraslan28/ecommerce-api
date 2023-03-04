@@ -31,7 +31,7 @@ urlpatterns = [
 
 
     path('orders/', views.OrderList.as_view(), name='order-list'),
-    #     path('Orders/<int:pk>/', views.OrderDetail.as_view(), name='order-detail'),
+    path('orders/<int:pk>/', views.OrderDetail.as_view(), name='order-detail'),
 
     path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/register/', views.UserRegister.as_view(), name='user_register'),

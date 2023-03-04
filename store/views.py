@@ -222,6 +222,34 @@ class OrderList(generics.ListCreateAPIView):
                 'items__product').filter(customer_id=customer_id)
         return self.queryset
 
-    serializer_class = serializers.OrderSerializer
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(
+            data=request.data,
+            context={'user_id': self.request.user.id})
+        serializer.is_valid(raise_exception=True)
+        order = serializer.save()
+        serializer = serializers.OrderSerializer(order)
+        return Response(serializer.data)
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return serializers.CreateOrderSerializer
+        return serializers.OrderSerializer
+
     pagination_class = DefaultPagination
     permission_classes = [permissions.IsAuthenticated]
+
+
+class OrderDetail(generics.RetrieveUpdateDestroyAPIView):
+    http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
+    queryset = Order.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == 'PATCH':
+            return serializers.UpdateOrderSerializer
+        return serializers.OrderSerializer
+
+    def get_permissions(self):
+        if self.request.method in ['PATCH', 'DELETE']:
+            return [permissions.IsAdminUser()]
+        return [permissions.IsAuthenticated()]
