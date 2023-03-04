@@ -6,10 +6,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 ##############################################################
 
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.generics import (
     ListCreateAPIView, RetrieveUpdateDestroyAPIView,
-    CreateAPIView, RetrieveDestroyAPIView, ListAPIView, GenericAPIView)
+    CreateAPIView, RetrieveDestroyAPIView, GenericAPIView)
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter, OrderingFilter
 
@@ -154,12 +153,12 @@ class CartItemDetail(GenericAPIView):
         return Response({"message": "cart item deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 
-class UserRegister(GenericAPIView):
+class UserRegister(CreateAPIView):
     serializer_class = UserSerializer
     queryset = None
 
-    def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+    # def post(self, request):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
+    #     return Response(serializer.data)
