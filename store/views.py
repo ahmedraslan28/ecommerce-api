@@ -136,7 +136,7 @@ class CartItemDetail(generics.GenericAPIView):
 
     def patch(self, request, cart_id, pk):
         obj = get_object_or_404(CartItem, pk=pk, cart_id=cart_id)
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(obj, data=request.data)
         serializer.is_valid(raise_exception=True)
         obj.quantity = request.data.get('quantity')
         obj.save()
@@ -152,17 +152,31 @@ class UserRegister(generics.CreateAPIView):
     serializer_class = serializers.UserSerializer
     queryset = None
 
-    # def post(self, request):
-    #     serializer = self.get_serializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     serializer.save()
-    #     return Response(serializer.data)
-
 
 class CustomerCreate(generics.CreateAPIView):
     serializer_class = serializers.CustomerSerializer
     queryset = Customer.objects.all()
 
 
-class CustomerDetail(generics.RetrieveUpdateAPIView):
-    pass
+class CustomerDetail(generics.GenericAPIView):
+    serializer_class = serializers.CustomerSerializer
+
+    def get_queryset(self):
+        if self.queryset is not None:
+            return self.queryset
+        print("user = ", self.request.user.id)
+        self.queryset = get_object_or_404(Customer, user=self.request.user)
+        return self.queryset
+
+    def get(self, request):
+        obj = self.get_queryset()
+        serializer = self.get_serializer(obj)
+        return Response(serializer.data)
+
+    def put(self, request):
+        obj = self.get_queryset()
+        serializer = self.get_serializer(
+            obj, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
