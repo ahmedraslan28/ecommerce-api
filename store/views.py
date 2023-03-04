@@ -6,26 +6,21 @@ from django_filters.rest_framework import DjangoFilterBackend
 ##############################################################
 
 from rest_framework import status
-from rest_framework.generics import (
-    ListCreateAPIView, RetrieveUpdateDestroyAPIView,
-    CreateAPIView, RetrieveDestroyAPIView, GenericAPIView)
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter, OrderingFilter
 
 ##############################################################
 
-from .serializers import (
-    ProductSerializer, CollectionSerializer, ReviewSerializer,
-    CartSerializer, CartItemSerializer, AddCartItemSerializer,
-    UpdateCartItemSerializer, UserSerializer)
+from . import serializers
 from .models import (Product, Collection, Review, Cart, CartItem)
 from .filters import ProductFilter
 from .pagination import DefaultPagination
 
 
-class ProductList(ListCreateAPIView):
+class ProductList(generics.ListCreateAPIView):
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = serializers.ProductSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     pagination_class = DefaultPagination
     filterset_class = ProductFilter
@@ -33,9 +28,9 @@ class ProductList(ListCreateAPIView):
     ordering_fields = ['unit_price']
 
 
-class ProductDetail(RetrieveUpdateDestroyAPIView):
+class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = serializers.ProductSerializer
 
     def delete(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
@@ -45,18 +40,18 @@ class ProductDetail(RetrieveUpdateDestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class CollectionList(ListCreateAPIView):
+class CollectionList(generics.ListCreateAPIView):
     queryset = Collection.objects.annotate(
         product_count=Count('products')).all()
 
-    serializer_class = CollectionSerializer
+    serializer_class = serializers.CollectionSerializer
 
 
-class CollectionDetail(RetrieveUpdateDestroyAPIView):
+class CollectionDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Collection.objects.annotate(
         product_count=Count('products')).all()
 
-    serializer_class = CollectionSerializer
+    serializer_class = serializers.CollectionSerializer
 
     def delete(self, request, pk):
         collection = get_object_or_404(Collection, pk=pk)
@@ -66,8 +61,8 @@ class CollectionDetail(RetrieveUpdateDestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ProductReviewList(ListCreateAPIView):
-    serializer_class = ReviewSerializer
+class ProductReviewList(generics.ListCreateAPIView):
+    serializer_class = serializers.ReviewSerializer
 
     def get_queryset(self):
         product_id = self.kwargs['pk']
@@ -78,30 +73,30 @@ class ProductReviewList(ListCreateAPIView):
         return {"product_id": self.kwargs["pk"]}
 
 
-class ProductReviewDetail(RetrieveUpdateDestroyAPIView):
-    serializer_class = ReviewSerializer
+class ProductReviewDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = serializers.ReviewSerializer
 
     def get_queryset(self):
         return Review.objects.filter(pk=self.kwargs['pk'], product=self.kwargs['product_id'])
 
 
-class CartCreate(CreateAPIView):
-    serializer_class = CartSerializer
+class CartCreate(generics.CreateAPIView):
+    serializer_class = serializers.CartSerializer
     queryset = Cart.objects.all()
 
 
-class CartRetrieve(RetrieveDestroyAPIView):
-    serializer_class = CartSerializer
+class CartRetrieve(generics.RetrieveDestroyAPIView):
+    serializer_class = serializers.CartSerializer
     queryset = Cart.objects.prefetch_related('items__product').all()
 
 
-class CartItemsList(GenericAPIView):
+class CartItemsList(generics.GenericAPIView):
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
-            return CartItemSerializer
+            return serializers.CartItemSerializer
         elif self.request.method == 'POST':
-            return AddCartItemSerializer
+            return serializers.AddCartItemSerializer
 
     def get_queryset(self):
         if self.queryset is not None:
@@ -127,12 +122,12 @@ class CartItemsList(GenericAPIView):
         return Response(serializer.data)
 
 
-class CartItemDetail(GenericAPIView):
+class CartItemDetail(generics.GenericAPIView):
     def get_serializer_class(self):
         if self.request.method == 'GET':
-            return CartItemSerializer
+            return serializers.CartItemSerializer
         elif self.request.method == 'PATCH':
-            return UpdateCartItemSerializer
+            return serializers.UpdateCartItemSerializer
 
     def get(self, request, cart_id, pk):
         obj = get_object_or_404(CartItem, pk=pk, cart_id=cart_id)
@@ -153,8 +148,8 @@ class CartItemDetail(GenericAPIView):
         return Response({"message": "cart item deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 
-class UserRegister(CreateAPIView):
-    serializer_class = UserSerializer
+class UserRegister(generics.CreateAPIView):
+    serializer_class = serializers.UserSerializer
     queryset = None
 
     # def post(self, request):
@@ -162,3 +157,7 @@ class UserRegister(CreateAPIView):
     #     serializer.is_valid(raise_exception=True)
     #     serializer.save()
     #     return Response(serializer.data)
+
+
+class CustomerList(generics.GenericAPIView):
+    pass
