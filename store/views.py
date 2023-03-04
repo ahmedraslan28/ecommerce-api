@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import (
     ListCreateAPIView, RetrieveUpdateDestroyAPIView,
-    CreateAPIView, RetrieveDestroyAPIView, ListAPIView)
+    CreateAPIView, RetrieveDestroyAPIView, ListAPIView, GenericAPIView)
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter, OrderingFilter
 
@@ -96,34 +96,53 @@ class CartRetrieve(RetrieveDestroyAPIView):
     queryset = Cart.objects.prefetch_related('items__product').all()
 
 
-class CartItemsList(APIView):
-    def get_queryset(self, pk):
+class CartItemsList(GenericAPIView):
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return CartItemSerializer
+        elif self.request.method == 'POST':
+            return AddCartItemSerializer
+
+    def get_queryset(self):
+        if self.queryset is not None:
+            return self.queryset
+        pk = self.kwargs['pk']
         if Cart.objects.filter(pk=pk).exists():
-            return CartItem.objects.filter(cart_id=pk).select_related('product')
+            self.queryset = CartItem.objects.filter(
+                cart_id=pk).select_related('product')
+            return self.queryset
         raise Http404()
 
     def get(self, request, pk):
-        obj = self.get_queryset(pk)
-        serializer = CartItemSerializer(obj, many=True)
+        obj = self.get_queryset()
+        serializer = self.get_serializer(obj, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, pk):
         context = {"cart_id": pk}
-        serializer = AddCartItemSerializer(data=request.data, context=context)
+        serializer = self.get_serializer(
+            data=request.data, context=context)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
 
 
-class CartItemDetail(APIView):
+class CartItemDetail(GenericAPIView):
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return CartItemSerializer
+        elif self.request.method == 'PATCH':
+            return UpdateCartItemSerializer
+
     def get(self, request, cart_id, pk):
         obj = get_object_or_404(CartItem, pk=pk, cart_id=cart_id)
-        serializer = CartItemSerializer(obj)
+        serializer = self.get_serializer(obj)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request, cart_id, pk):
         obj = get_object_or_404(CartItem, pk=pk, cart_id=cart_id)
-        serializer = UpdateCartItemSerializer(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         obj.quantity = request.data.get('quantity')
         obj.save()
