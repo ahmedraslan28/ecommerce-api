@@ -24,8 +24,10 @@ urlpatterns = [
          views.CartItemDetail.as_view(), name='cartitem-detail'),
 
     path('customers/', views.CustomerCreate.as_view(), name='customer-create'),
-    path('customers/me/', views.CustomerDetail.as_view(),
+    path('customers/<int:pk>/', views.CustomerDetail.as_view(),
          name='customer-detail'),
+    path('customers/me/', views.CustomerProfile.as_view(),
+         name='customer-profile'),
 
     path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/register/', views.UserRegister.as_view(), name='user_register'),

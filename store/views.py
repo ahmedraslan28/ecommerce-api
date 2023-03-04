@@ -158,13 +158,17 @@ class CustomerCreate(generics.CreateAPIView):
     queryset = Customer.objects.all()
 
 
-class CustomerDetail(generics.GenericAPIView):
+class CustomerDetail(generics.RetrieveAPIView):
+    serializer_class = serializers.CustomerSerializer
+    queryset = Customer.objects.all()
+
+
+class CustomerProfile(generics.GenericAPIView):
     serializer_class = serializers.CustomerSerializer
 
     def get_queryset(self):
         if self.queryset is not None:
             return self.queryset
-        print("user = ", self.request.user.id)
         self.queryset = get_object_or_404(Customer, user=self.request.user)
         return self.queryset
 
