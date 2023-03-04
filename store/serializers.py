@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 
 from decimal import Decimal
 from rest_framework import serializers
-from . models import Product, Collection, Review, Cart, CartItem
+from . models import Product, Collection, Review, Cart, CartItem, Customer
 
 User = get_user_model()
 
@@ -138,3 +138,11 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+
+class CustomerSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Customer
+        fields = ['id', 'user_id', 'phone', 'birth_date', 'membership']

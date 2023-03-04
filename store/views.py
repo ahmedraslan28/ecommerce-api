@@ -159,5 +159,9 @@ class UserRegister(generics.CreateAPIView):
     #     return Response(serializer.data)
 
 
-class CustomerList(generics.GenericAPIView):
+class CustomerCreate(generics.CreateAPIView):
+    pass
+
+
+class CustomerDetail(generics.RetrieveUpdateAPIView):
     pass
