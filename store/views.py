@@ -14,7 +14,8 @@ from rest_framework import permissions
 ##############################################################
 
 from . import serializers
-from .models import (Product, Collection, Review, Cart, CartItem, Customer)
+from .models import (Product, Collection, Review,
+                     Cart, CartItem, Customer, Order)
 from .filters import ProductFilter
 from .pagination import DefaultPagination
 from .permissions import (IsAdminOrReadOnly,
@@ -204,3 +205,23 @@ class CustomerProfile(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+
+class OrderList(generics.ListCreateAPIView):
+
+    def get_queryset(self):
+        if self.queryset is not None:
+            return self.queryset
+        user = self.request.user
+        if user.is_staff:
+            self.queryset = Order.objects.prefetch_related(
+                'items__product').all()
+        else:
+            customer_id = Customer.objects.get(user_id=user.id)
+            self.queryset = Order.objects.prefetch_related(
+                'items__product').filter(customer_id=customer_id)
+        return self.queryset
+
+    serializer_class = serializers.OrderSerializer
+    pagination_class = DefaultPagination
+    permission_classes = [permissions.IsAuthenticated]
