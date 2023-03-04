@@ -76,7 +76,8 @@ class ProductReviewList(generics.ListCreateAPIView):
         return Review.objects.filter(product=product_id)
 
     def get_serializer_context(self):
-        return {"product_id": self.kwargs["pk"]}
+        return {"product_id": self.kwargs["pk"],
+                "reviewer_id": self.request.user.id}
 
 
 class ProductReviewDetail(generics.RetrieveUpdateDestroyAPIView):

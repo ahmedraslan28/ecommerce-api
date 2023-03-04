@@ -39,13 +39,18 @@ class SimpleProductSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    reviewer_id = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Review
-        fields = ['id', 'name', 'description', 'rate',  'date']
+        fields = ['id', 'reviewer_id', 'name', 'description', 'rate',  'date']
 
     def create(self, validated_data):
         return Review.objects.create(
-            product_id=self.context['product_id'], **validated_data)
+            product_id=self.context['product_id'],
+            reviewer_id=self.context['reviewer_id'],
+            **validated_data
+        )
 
 
 class CartItemSerializer(serializers.ModelSerializer):
