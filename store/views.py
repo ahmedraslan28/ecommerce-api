@@ -17,7 +17,9 @@ from . import serializers
 from .models import (Product, Collection, Review, Cart, CartItem, Customer)
 from .filters import ProductFilter
 from .pagination import DefaultPagination
-from .permissions import IsAdminOrReadOnly
+from .permissions import (IsAdminOrReadOnly,
+                          IsReviewerOrReadOnly,
+                          )
 
 
 class ProductList(generics.ListCreateAPIView):
@@ -70,6 +72,12 @@ class CollectionDetail(generics.RetrieveUpdateDestroyAPIView):
 class ProductReviewList(generics.ListCreateAPIView):
     serializer_class = serializers.ReviewSerializer
 
+    def get_permissions(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            return [permissions.AllowAny()]
+        elif self.request.method == 'POST':
+            return [permissions.IsAuthenticated()]
+
     def get_queryset(self):
         product_id = self.kwargs['pk']
         get_object_or_404(Product, pk=product_id)
@@ -82,6 +90,8 @@ class ProductReviewList(generics.ListCreateAPIView):
 
 class ProductReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.ReviewSerializer
+
+    permission_classes = [IsReviewerOrReadOnly]
 
     def get_queryset(self):
         return Review.objects.filter(pk=self.kwargs['pk'], product=self.kwargs['product_id'])
@@ -163,15 +173,18 @@ class UserRegister(generics.CreateAPIView):
 class CustomerList(generics.ListCreateAPIView):
     serializer_class = serializers.CustomerSerializer
     queryset = Customer.objects.all()
+    permission_classes = [permissions.IsAdminUser]
 
 
 class CustomerDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.CustomerSerializer
     queryset = Customer.objects.all()
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class CustomerProfile(generics.GenericAPIView):
     serializer_class = serializers.CustomerSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         if self.queryset is not None:
