@@ -13,7 +13,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 ##############################################################
 
 from . import serializers
-from .models import (Product, Collection, Review, Cart, CartItem)
+from .models import (Product, Collection, Review, Cart, CartItem, Customer)
 from .filters import ProductFilter
 from .pagination import DefaultPagination
 
@@ -160,7 +160,8 @@ class UserRegister(generics.CreateAPIView):
 
 
 class CustomerCreate(generics.CreateAPIView):
-    pass
+    serializer_class = serializers.CustomerSerializer
+    queryset = Customer.objects.all()
 
 
 class CustomerDetail(generics.RetrieveUpdateAPIView):

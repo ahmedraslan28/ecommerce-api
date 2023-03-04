@@ -1,32 +1,33 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import (ProductList, ProductDetail, CollectionList,
-                    CollectionDetail, ProductReviewList, ProductReviewDetail,
-                    CartCreate, CartRetrieve, CartItemsList, CartItemDetail,
-                    UserRegister)
+from . import views
 
 
 urlpatterns = [
-    path('products/', ProductList.as_view(), name="product-list"),
-    path('products/<int:pk>/', ProductDetail.as_view(), name="product-detail"),
+    path('products/', views.ProductList.as_view(), name="product-list"),
+    path('products/<int:pk>/', views.ProductDetail.as_view(), name="product-detail"),
 
-    path('collections/', CollectionList.as_view(), name="collection-list"),
-    path('collections/<int:pk>/', CollectionDetail.as_view(),
+    path('collections/', views.CollectionList.as_view(), name="collection-list"),
+    path('collections/<int:pk>/', views.CollectionDetail.as_view(),
          name="collection-detail"),
 
     path('products/<int:pk>/reviews/',
-         ProductReviewList.as_view(), name="product-review-list"),
+         views.ProductReviewList.as_view(), name="product-review-list"),
     path('products/<int:product_id>/reviews/<int:pk>/',
-         ProductReviewDetail.as_view(), name="product-review-detail"),
+         views.ProductReviewDetail.as_view(), name="product-review-detail"),
 
-    path('cart/', CartCreate.as_view(), name="cart-create"),
-    path('cart/<str:pk>/', CartRetrieve.as_view(), name="cart-detail"),
+    path('cart/', views.CartCreate.as_view(), name="cart-create"),
+    path('cart/<str:pk>/', views.CartRetrieve.as_view(), name="cart-detail"),
 
-    path('cart/<str:pk>/items/', CartItemsList.as_view(), name='cartitem-list'),
+    path('cart/<str:pk>/items/', views.CartItemsList.as_view(), name='cartitem-list'),
     path('cart/<str:cart_id>/items/<int:pk>',
-         CartItemDetail.as_view(), name='cartitem-detail'),
+         views.CartItemDetail.as_view(), name='cartitem-detail'),
+
+    path('customers/', views.CustomerCreate.as_view(), name='customer-create'),
+    path('customers/<int:pk>/', views.CustomerDetail.as_view(),
+         name='customer-detail'),
 
     path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('auth/register/', UserRegister.as_view(), name='user_register'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('auth/register/', views.UserRegister.as_view(), name='user_register'),
+    path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
