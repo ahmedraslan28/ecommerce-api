@@ -9,6 +9,7 @@ from rest_framework import status
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework import permissions
 
 ##############################################################
 
@@ -16,6 +17,7 @@ from . import serializers
 from .models import (Product, Collection, Review, Cart, CartItem, Customer)
 from .filters import ProductFilter
 from .pagination import DefaultPagination
+from .permissions import IsAdminOrReadOnly
 
 
 class ProductList(generics.ListCreateAPIView):
@@ -26,11 +28,13 @@ class ProductList(generics.ListCreateAPIView):
     filterset_class = ProductFilter
     search_fields = ['title', 'description']
     ordering_fields = ['unit_price']
+    permission_classes = [IsAdminOrReadOnly]
 
 
 class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = serializers.ProductSerializer
+    permission_classes = [IsAdminOrReadOnly]
 
     def delete(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
@@ -45,6 +49,7 @@ class CollectionList(generics.ListCreateAPIView):
         product_count=Count('products')).all()
 
     serializer_class = serializers.CollectionSerializer
+    permission_classes = [IsAdminOrReadOnly]
 
 
 class CollectionDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -52,6 +57,7 @@ class CollectionDetail(generics.RetrieveUpdateDestroyAPIView):
         product_count=Count('products')).all()
 
     serializer_class = serializers.CollectionSerializer
+    permission_classes = [IsAdminOrReadOnly]
 
     def delete(self, request, pk):
         collection = get_object_or_404(Collection, pk=pk)
@@ -153,12 +159,12 @@ class UserRegister(generics.CreateAPIView):
     queryset = None
 
 
-class CustomerCreate(generics.CreateAPIView):
+class CustomerList(generics.ListCreateAPIView):
     serializer_class = serializers.CustomerSerializer
     queryset = Customer.objects.all()
 
 
-class CustomerDetail(generics.RetrieveAPIView):
+class CustomerDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.CustomerSerializer
     queryset = Customer.objects.all()
 

@@ -23,7 +23,7 @@ urlpatterns = [
     path('cart/<str:cart_id>/items/<int:pk>',
          views.CartItemDetail.as_view(), name='cartitem-detail'),
 
-    path('customers/', views.CustomerCreate.as_view(), name='customer-create'),
+    path('customers/', views.CustomerList.as_view(), name='customer-create'),
     path('customers/<int:pk>/', views.CustomerDetail.as_view(),
          name='customer-detail'),
     path('customers/me/', views.CustomerProfile.as_view(),
