@@ -81,8 +81,10 @@ class ProductReviewList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         product_id = self.kwargs['pk']
-        get_object_or_404(Product, pk=product_id)
-        return Review.objects.filter(product=product_id)
+        if Product.objects.filter(pk=product_id).exists():
+            self.queryset = Review.objects.filter(product=product_id)
+            return self.queryset
+        raise Http404
 
     def get_serializer_context(self):
         return {"product_id": self.kwargs["pk"],
@@ -95,7 +97,8 @@ class ProductReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsReviewerOrReadOnly]
 
     def get_queryset(self):
-        self.queryset = Review.objects.filter(pk=self.kwargs['pk'], product=self.kwargs['product_id'])
+        self.queryset = Review.objects.filter(
+            pk=self.kwargs['pk'], product=self.kwargs['product_id'])
         return self.queryset
 
 
