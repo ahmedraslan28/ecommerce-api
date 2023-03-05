@@ -254,3 +254,20 @@ class OrderDetail(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method in ['PATCH', 'DELETE']:
             return [permissions.IsAdminUser()]
         return [permissions.IsAuthenticated()]
+
+
+class ProductImagesList(generics.ListCreateAPIView):
+    def get_serializer_context(self):
+        return {"product_id": self.kwargs["pk"]}
+
+    serializer_class = serializers.ProductImageSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    def get_queryset(self):
+        if self.queryset is not None:
+            return self.queryset
+        product_id = self.kwargs["pk"]
+        if Product.objects.filter(pk=product_id).exists():
+            self.queryset = ProductImage.objects.filter(product_id=product_id)
+            return self.queryset
+        raise Http404
