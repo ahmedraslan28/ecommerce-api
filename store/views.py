@@ -271,3 +271,19 @@ class ProductImagesList(generics.ListCreateAPIView):
             self.queryset = ProductImage.objects.filter(product_id=product_id)
             return self.queryset
         raise Http404
+
+
+class ProductImageDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = serializers.ProductImageSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    def get_queryset(self):
+        if self.queryset is not None:
+            return self.queryset
+        product_id = self.kwargs["product_pk"]
+        image_id = self.kwargs["pk"]
+        if Product.objects.filter(pk=product_id).exists():
+            self.queryset = ProductImage.objects.filter(
+                pk=image_id, product_id=product_id)
+            return self.queryset
+        raise Http404
