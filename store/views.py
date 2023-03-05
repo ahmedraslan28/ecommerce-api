@@ -21,18 +21,18 @@ from .permissions import *
 
 
 class ProductList(generics.ListCreateAPIView):
-    queryset = Product.objects.all()
+    queryset = Product.objects.prefetch_related('images').all()
     serializer_class = serializers.ProductSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     pagination_class = DefaultPagination
     filterset_class = ProductFilter
     search_fields = ['title', 'description']
-    ordering_fields = ['unit_price']
+    ordering_fields = ['unit_price', 'id']
     permission_classes = [IsAdminOrReadOnly]
 
 
 class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Product.objects.all()
+    queryset = Product.objects.prefetch_related('images').all()
     serializer_class = serializers.ProductSerializer
     permission_classes = [IsAdminOrReadOnly]
 
