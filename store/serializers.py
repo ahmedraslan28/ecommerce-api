@@ -29,6 +29,8 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
 
+    images = ProductImageSerializer(many=True, read_only=True)
+
     price = serializers.DecimalField(
         max_digits=6, decimal_places=2, source='unit_price')
 
@@ -38,7 +40,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'title', 'description', 'slug', 'inventory',
-                  'price', 'price_with_tax', 'collection']
+                  'price', 'price_with_tax', 'collection', 'images']
 
     def calculate_tax(self, instance: Product):
         return instance.unit_price * Decimal(1.1)
