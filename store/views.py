@@ -14,13 +14,10 @@ from rest_framework import permissions
 ##############################################################
 
 from . import serializers
-from .models import (Product, Collection, Review,
-                     Cart, CartItem, Customer, Order)
+from .models import *
 from .filters import ProductFilter
 from .pagination import DefaultPagination
-from .permissions import (IsAdminOrReadOnly,
-                          IsReviewerOrReadOnly,
-                          )
+from .permissions import *
 
 
 class ProductList(generics.ListCreateAPIView):
