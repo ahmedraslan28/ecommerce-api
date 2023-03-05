@@ -4,8 +4,7 @@ from django.db import transaction
 from rest_framework import serializers
 
 from decimal import Decimal
-from . models import (Product, Collection, Review, Cart,
-                      CartItem, Customer, Order, OrderItem)
+from . models import *
 
 User = get_user_model()
 
@@ -220,3 +219,9 @@ class UpdateOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['payment_status']
+
+
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ['id', 'image']
