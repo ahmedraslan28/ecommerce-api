@@ -95,7 +95,8 @@ class ProductReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsReviewerOrReadOnly]
 
     def get_queryset(self):
-        return Review.objects.filter(pk=self.kwargs['pk'], product=self.kwargs['product_id'])
+        self.queryset = Review.objects.filter(pk=self.kwargs['pk'], product=self.kwargs['product_id'])
+        return self.queryset
 
 
 class CartCreate(generics.CreateAPIView):
