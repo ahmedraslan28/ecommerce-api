@@ -192,6 +192,34 @@ class UserList(generics.ListAPIView):
     permission_classes = [permissions.IsAdminUser]
 
 
+class UserProfile(generics.GenericAPIView):
+    def get_serializer_class(self):
+        if self.request.method == 'PUT':
+            return serializers.UserUpdateSerializer
+        return serializers.UserSerializer
+
+    def get_queryset(self):
+        if self.queryset is not None:
+            return self.queryset
+        self.queryset = get_object_or_404(User, pk=self.request.user.id)
+        return self.queryset
+
+    def get(self, request):
+        obj = self.get_queryset()
+        serializer = self.get_serializer(obj)
+        return Response(serializer.data)
+
+    def put(self, request):
+        obj = self.get_queryset()
+        context = {"user": self.request.user}
+        serializer = self.get_serializer(
+            obj, data=request.data, context=context)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        # print(serializer.data)
+        return Response(serializer.data)
+
+
 class CustomerList(generics.ListCreateAPIView):
     serializer_class = serializers.CustomerSerializer
     queryset = Customer.objects.all()

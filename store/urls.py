@@ -28,6 +28,7 @@ urlpatterns = [
          views.CartItemDetail.as_view(), name='cartitem-detail'),
 
     path('users/', views.UserList.as_view(), name='user-list'),
+    path('users/me', views.UserProfile.as_view(), name='user-profile'),
 
     path('customers/', views.CustomerList.as_view(), name='customer-create'),
     path('customers/<int:pk>/', views.CustomerDetail.as_view(),
