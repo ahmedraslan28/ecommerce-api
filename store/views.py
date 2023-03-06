@@ -195,7 +195,7 @@ class CustomerList(generics.ListCreateAPIView):
 class CustomerDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.CustomerSerializer
     queryset = Customer.objects.all()
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
 
 
 class CustomerProfile(generics.GenericAPIView):
