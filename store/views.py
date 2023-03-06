@@ -7,9 +7,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import status
 from rest_framework import generics
-from rest_framework.response import Response
-from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework import permissions
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.filters import SearchFilter, OrderingFilter
+
 
 ##############################################################
 
@@ -170,6 +172,18 @@ class CartItemDetail(generics.GenericAPIView):
 class UserRegister(generics.CreateAPIView):
     serializer_class = serializers.UserSerializer
     queryset = None
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        refresh = RefreshToken.for_user(user)
+        response = {
+            **serializer.data,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+        return Response(response)
 
 
 class CustomerList(generics.ListCreateAPIView):
