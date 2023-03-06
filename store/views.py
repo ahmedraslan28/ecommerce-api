@@ -186,6 +186,12 @@ class UserRegister(generics.CreateAPIView):
         return Response(response)
 
 
+class UserList(generics.ListAPIView):
+    serializer_class = serializers.UserSerializer
+    queryset = User.objects.all()
+    permission_classes = [permissions.IsAdminUser]
+
+
 class CustomerList(generics.ListCreateAPIView):
     serializer_class = serializers.CustomerSerializer
     queryset = Customer.objects.all()
