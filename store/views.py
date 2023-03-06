@@ -193,6 +193,8 @@ class UserList(generics.ListAPIView):
 
 
 class UserProfile(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def get_serializer_class(self):
         if self.request.method == 'PUT':
             return serializers.UserUpdateSerializer
@@ -216,7 +218,6 @@ class UserProfile(generics.GenericAPIView):
             obj, data=request.data, context=context)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        # print(serializer.data)
         return Response(serializer.data)
 
 

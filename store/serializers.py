@@ -175,14 +175,19 @@ class UserUpdateSerializer(UserSerializer):
     def validate(self, data):
         super().validate(data)
         user = self.context['user']
-        print(data)
-        password = data['old_password']
-        if len(password) > 0 and not user.check_password(password):
+        old_password = data['old_password']
+        new_password = data['password']
+        repeat_password = data['repeat_password']
+        if len(old_password) > 0 and not user.check_password(old_password):
             raise serializers.ValidationError("old password is invalid")
+
+        if not (all(len(v) > 0 for v in [old_password, new_password, repeat_password])
+                or all(len(v) == 0 for v in [old_password, new_password, repeat_password])):
+            raise serializers.ValidationError(
+                "please check your passwords fields")
         return data
 
     def update(self, instance, validated_data):
-        print(validated_data)
         old_password = validated_data.pop('old_password')
         new_password = validated_data.pop('password')
         repeat_password = validated_data.pop('repeat_password')
