@@ -2,7 +2,6 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from . import views
 
-
 urlpatterns = [
     path('products/', views.ProductList.as_view(), name="product-list"),
     path('products/<int:pk>/', views.ProductDetail.as_view(), name="product-detail"),
@@ -36,11 +35,14 @@ urlpatterns = [
     path('customers/me/', views.CustomerProfile.as_view(),
          name='customer-profile'),
 
-
     path('orders/', views.OrderList.as_view(), name='order-list'),
     path('orders/<int:pk>/', views.OrderDetail.as_view(), name='order-detail'),
 
     path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/register/', views.UserRegister.as_view(), name='user_register'),
+    path('auth/reset-password/',
+         views.PasswordReset.as_view(), name='password_reset'),
+    path('auth/reset-password/<uidb64>/<token>/', views.PasswordResetConfirmation.as_view(),
+         name='password_reset-confirmation'),
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

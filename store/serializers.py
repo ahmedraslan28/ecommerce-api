@@ -4,7 +4,7 @@ from django.db import transaction
 from rest_framework import serializers
 
 from decimal import Decimal
-from . models import *
+from .models import *
 
 User = get_user_model()
 
@@ -28,7 +28,6 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-
     images = ProductImageSerializer(many=True, read_only=True)
 
     price = serializers.DecimalField(
@@ -57,7 +56,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ['id', 'reviewer_id', 'name', 'description', 'rate',  'date']
+        fields = ['id', 'reviewer_id', 'name', 'description', 'rate', 'date']
 
     def create(self, validated_data):
         return Review.objects.create(
@@ -268,3 +267,18 @@ class UpdateOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['payment_status']
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
+class PasswordResetConfirmationSerializer(serializers.Serializer):
+    password = serializers.CharField()
+    confirm_password = serializers.CharField()
+
+    def validate(self, data):
+        super().validate(data)
+        if data['password'] != data['confirm_password']:
+            raise serializers.ValidationError("the two passwords doesn't match!")
+        return data

@@ -1,7 +1,13 @@
+from django.conf import settings
 from django.http import Http404
-from django.shortcuts import get_object_or_404
 from django.db.models.aggregates import Count
 from django_filters.rest_framework import DjangoFilterBackend
+from django.core.mail import send_mail
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes, force_str
 
 ##############################################################
 
@@ -12,7 +18,6 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.filters import SearchFilter, OrderingFilter
 
-
 ##############################################################
 
 from . import serializers
@@ -20,6 +25,7 @@ from .models import *
 from .filters import ProductFilter
 from .pagination import DefaultPagination
 from .permissions import *
+from datetime import datetime, timedelta
 
 
 class ProductList(generics.ListCreateAPIView):
@@ -41,7 +47,8 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
         if product.orderitems.count() > 0:
-            return Response({'error': 'Product cannot be deleted because it is associated with an order item.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+            return Response({'error': 'Product cannot be deleted because it is associated with an order item.'},
+                            status=status.HTTP_405_METHOD_NOT_ALLOWED)
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -64,7 +71,8 @@ class CollectionDetail(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, pk):
         collection = get_object_or_404(Collection, pk=pk)
         if collection.products.count() > 0:
-            return Response({'error': 'Collection cannot be deleted because it includes one or more products.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+            return Response({'error': 'Collection cannot be deleted because it includes one or more products.'},
+                            status=status.HTTP_405_METHOD_NOT_ALLOWED)
         collection.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -219,6 +227,53 @@ class UserProfile(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+
+class PasswordReset(generics.GenericAPIView):
+    serializer_class = serializers.PasswordResetSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data['email']
+        try:
+            user = User.objects.get(email=email)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            expiration_time = datetime.now() + timedelta(minutes=1)  # Set expiration time to 30 minutes from now
+            date_time = expiration_time.strftime("%y-%m-%d, %H:%M:%S")
+            print('expire = ', expiration_time)
+            print('-----------------------------')
+            print(date_time)
+            token = default_token_generator.make_token(user)
+            reset_url = f"http://localhost:8000//api/auth/reset-password/{uid}/{token}"
+            send_mail(
+                'Reset Your Password',
+                f'Please click on this link to reset your password: {reset_url}',
+                settings.DEFAULT_FROM_EMAIL,
+                [email],
+            )
+        except User.DoesNotExist:
+            return Response({'no user found with given email'}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'success': 'Password reset Email sent to the specified email address'})
+
+
+class PasswordResetConfirmation(generics.GenericAPIView):
+    serializer_class = serializers.PasswordResetConfirmationSerializer
+
+    def post(self, request, uidb64, token):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if user is not None and default_token_generator.check_token(user, token):
+            user.set_password(serializer.validated_data['password'])
+            user.save()
+            return Response({'success': 'Password has been reset.'})
+        return Response({'error': 'Invalid reset URL.'})
 
 
 class CustomerList(generics.ListCreateAPIView):
