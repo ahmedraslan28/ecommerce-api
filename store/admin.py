@@ -11,6 +11,7 @@ class UserAdmin(admin.ModelAdmin):
 
 
 admin.site.register(models.User, UserAdmin)
+admin.site.register(models.ProductImage)
 admin.site.register(models.Product)
 admin.site.register(models.Order)
 admin.site.register(models.Customer)
