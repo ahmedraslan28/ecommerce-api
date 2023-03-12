@@ -1,3 +1,7 @@
 2023-03-12 21:06:01,621 (INFO) - django.utils.autoreload - Watching for file changes with StatReloader
 2023-03-12 21:07:22,749 (INFO) - django.utils.autoreload - D:\MyProjects\ecommerce-backend\storefront\settings.py changed, reloading.
 2023-03-12 21:07:24,722 (INFO) - django.utils.autoreload - Watching for file changes with StatReloader
+2023-03-12 21:30:47,812 (INFO) - django.utils.autoreload - D:\MyProjects\ecommerce-backend\manage.py changed, reloading.
+2023-03-12 21:34:25,201 (INFO) - django.utils.autoreload - Watching for file changes with StatReloader
+2023-03-12 21:35:43,821 (INFO) - django.utils.autoreload - D:\MyProjects\ecommerce-backend\storefront\settings\common.py changed, reloading.
+2023-03-12 21:35:45,854 (INFO) - django.utils.autoreload - Watching for file changes with StatReloader
