@@ -12,7 +12,8 @@ django-filter = "*"
 djangorestframework-simplejwt = "*"
 pillow = "*"
 whitenoise = "*"
-gunicorn = "*"
+waitress = "*"
+gunicorn = {extras = ["windows"], version = "*"}
 
 [dev-packages]
 autopep8 = "*"
