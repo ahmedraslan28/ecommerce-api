@@ -278,7 +278,7 @@ class PasswordResetConfirmation(generics.GenericAPIView):
         return Response({'error': 'Invalid reset URL.'})
 
 
-class CustomerList(generics.ListCreateAPIView):
+class CustomerList(generics.ListAPIView):
     serializer_class = serializers.CustomerSerializer
     queryset = Customer.objects.all()
     permission_classes = [permissions.IsAdminUser]
