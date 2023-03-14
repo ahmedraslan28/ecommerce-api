@@ -30,6 +30,14 @@ class ProductImageSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
 
+    uploaded_images = serializers.ListField(
+        child=serializers.ImageField(max_length=None,
+                                     allow_empty_file=True, use_url=True),
+        write_only=True,
+        required=False,
+        default=[]
+    )
+
     price = serializers.DecimalField(
         max_digits=6, decimal_places=2, source='unit_price')
 
@@ -39,10 +47,23 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'title', 'description', 'slug', 'inventory',
-                  'price', 'price_with_tax', 'collection', 'images']
+                  'price', 'price_with_tax', 'collection', 'images', 'uploaded_images']
 
     def calculate_tax(self, instance: Product):
         return instance.unit_price * Decimal(1.1)
+
+    def create(self, validated_data):
+        upladed_images = validated_data.pop('uploaded_images')
+        product = Product.objects.create(**validated_data)
+        image_list = []
+        for image in upladed_images:
+            image_list.append(
+                ProductImage(product=product, image=image)
+            )
+
+        ProductImage.objects.bulk_create(image_list)
+
+        return product
 
 
 class SimpleProductSerializer(serializers.ModelSerializer):
@@ -280,5 +301,6 @@ class PasswordResetConfirmationSerializer(serializers.Serializer):
     def validate(self, data):
         super().validate(data)
         if data['password'] != data['confirm_password']:
-            raise serializers.ValidationError("the two passwords doesn't match!")
+            raise serializers.ValidationError(
+                "the two passwords doesn't match!")
         return data
