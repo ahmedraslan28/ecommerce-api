@@ -239,7 +239,8 @@ class PasswordReset(generics.GenericAPIView):
         try:
             user = User.objects.get(email=email)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            expiration_time = datetime.now() + timedelta(minutes=1)  # Set expiration time to 30 minutes from now
+            # Set expiration time to 30 minutes from now
+            expiration_time = datetime.now() + timedelta(minutes=1)
             date_time = expiration_time.strftime("%y-%m-%d, %H:%M:%S")
             print('expire = ', expiration_time)
             print('-----------------------------')
@@ -360,7 +361,7 @@ class OrderDetail(generics.RetrieveUpdateDestroyAPIView):
         return [permissions.IsAuthenticated()]
 
 
-class ProductImagesList(generics.ListCreateAPIView):
+class ProductImagesList(generics.ListAPIView):
     def get_serializer_context(self):
         return {"product_id": self.kwargs["pk"]}
 
