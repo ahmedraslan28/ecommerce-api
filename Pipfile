@@ -12,6 +12,7 @@ django-filter = "*"
 djangorestframework-simplejwt = "*"
 pillow = "*"
 whitenoise = "*"
+drf-yasg = "*"
 
 [dev-packages]
 autopep8 = "*"
