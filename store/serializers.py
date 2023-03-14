@@ -48,6 +48,7 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = ['id', 'title', 'description', 'slug', 'inventory',
                   'price', 'price_with_tax', 'collection', 'images', 'uploaded_images']
+        partial = True
 
     def calculate_tax(self, instance: Product):
         return instance.unit_price * Decimal(1.1)

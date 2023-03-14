@@ -43,6 +43,7 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.prefetch_related('images').all()
     serializer_class = serializers.ProductSerializer
     permission_classes = [IsAdminOrReadOnly]
+    partial = True
 
     def delete(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
