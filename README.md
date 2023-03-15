@@ -1,13 +1,10 @@
 # Ecommerce-Api
 
-this is the complete backend project for Ecommerce store.  It mimics the complete Ecommerce API behaviour.
-
-![image](Github-images/home.jpg)
+this is the complete backend project for Ecommerce store. It mimics the complete Ecommerce API behaviour.
 
 ## About
 
 This eCommerce backend application is built using Dajngo and the Django Rest Framework framework. It provides a RESTful API for managing products, orders, and customers in an online store.
-
 
 ## Features
 
@@ -15,17 +12,15 @@ This eCommerce backend application is built using Dajngo and the Django Rest Fra
 - User registration and password reset functionality
 - Email confirmation for password reset
 - CRUD operations and more complex operations for managing products, orders, and customers
-- paginate the products endpoint 
+- paginate the products endpoint
 - filtering and searching on the products endpoint
 - File upload functionality for product images
-
 
 ## Technologies Used
 
 - Django
 - Django REST Framework
-- MySql 
-
+- MySql
 
 ## Prerequisities
 
@@ -37,7 +32,6 @@ To be able to run the project successfully you need to have the following instal
 
 You can install python and MySql from their official website.\
 You can install pipenv using this command `pip install pipenv`
-
 
 ## How to run?
 
@@ -51,7 +45,6 @@ You can install pipenv using this command `pip install pipenv`
 8. Start the server: `python manage.py runserver`
 
 Please make sure to install all the prerequisities listed above in the [**Prerequisities**](#prerequisities) section.
-
 
 ## Database Creation and Configuration
 
@@ -69,20 +62,16 @@ DATABASES = {
 }
 ```
 
-replace the name and password with your own name and password 
-
-
+replace the name and password with your own name and password
 
 ## Database Seeds
 
 To seed an empty database before running the project you should run `python manage.py seed_db`, this will use the prewritten seeds stored in \
 `store/management/commands` to seed your local database and create a group of products and collections and customers
 
-
 ## API Documentation
 
 I use `Postman` for generating the API documentation, so the documentation is hosted on a [API Documentation](https://documenter.getpostman.com/view/24318609/2s93JwMghA) and not locally.
-
 
 ## Database Modeling
 
@@ -92,13 +81,11 @@ view it online: [DB Model](https://dbdiagram.io/d/6062e295ecb54e10c33de73e) .
 
 ![image](Github-images/database_modeling.png)
 
-
-
 ## For testers
 
 When you use the seeds `python manage.py seed_db` you can use the following users to test:
 
-| username           | Password | Type   |
-| ----------------- | -------- | ------ | 
-| admin   | 1234 | admin   | 
-| user    | 1234 | user    | 
+| username | Password | Type  |
+| -------- | -------- | ----- |
+| admin    | 1234     | admin |
+| user     | 1234     | user  |
