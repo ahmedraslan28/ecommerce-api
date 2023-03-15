@@ -68,7 +68,7 @@ DATABASES = {
 }
 ```
 
-replace the name and password with your on name and password 
+replace the name and password with your own name and password 
 
 
 
