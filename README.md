@@ -44,9 +44,10 @@ You can install pipenv using this command `pip install pipenv`
 2. Activate the virtual environment: `pipenv shell`
 3. Install dependencies: `pipenv install`
 4. Create and Configure the database as mentioned in [**Database Creation and Configuration**](#database-creation-and-configuration) section.
-5. seed the database if you would like to, as refered to in the [**Database Seeds**](#database-seeds) section.
-6. Run migrations: `python manage.py migrate`
-7. Start the server: `python manage.py runserver`
+5. Run migrations: `python manage.py migrate`
+6. seed the database if you would like to, as refered to in the [**Database Seeds**](#database-seeds) section.
+7. create a superuser (admin) if you would like to, using command `python manage.py createsuperuser`
+8. Start the server: `python manage.py runserver`
 
 Please make sure to install all the prerequisities listed above in the [**Prerequisities**](#prerequisities) section.
 
@@ -80,6 +81,7 @@ To seed an empty database before running the project you should run `python mana
 ## API Documentation
 
 Documentation for the API endpoints can be found in this link [API Documentation](https://documenter.getpostman.com/view/24318609/2s93JwMghA) .
+
 
 ## Database Design
 
