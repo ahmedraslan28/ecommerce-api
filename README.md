@@ -84,9 +84,14 @@ To seed an empty database before running the project you should run `python mana
 I use `Postman` for generating the API documentation, so the documentation is hosted on a [API Documentation](https://documenter.getpostman.com/view/24318609/2s93JwMghA) and not locally.
 
 
-## Database Design
+## Database Modeling
 
 This eCommerce backend application uses a MySql database with the following tables.
+
+view it online: [DB Model](https://dbdiagram.io/d/6062e295ecb54e10c33de73e) and not locally.
+
+![image](Github-images/database_modeling.png)
+
 
 
 ## For testers
