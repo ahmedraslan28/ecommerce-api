@@ -13,6 +13,8 @@ This eCommerce backend application is built using Dajngo and the Django Rest Fra
 - User registration and password reset functionality
 - Email confirmation for password reset
 - CRUD operations and more complex operations for managing products, orders, and customers
+- paginate the products endpoint 
+- filtering and searching on the products endpoint
 - File upload functionality for product images
 
 
