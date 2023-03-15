@@ -80,7 +80,7 @@ To seed an empty database before running the project you should run `python mana
 
 ## API Documentation
 
-Documentation for the API endpoints can be found in this link [API Documentation](https://documenter.getpostman.com/view/24318609/2s93JwMghA) .
+I use `Postman` for generating the API documentation, so the documentation is hosted on a [API Documentation](https://documenter.getpostman.com/view/24318609/2s93JwMghA) and not locally.
 
 
 ## Database Design
