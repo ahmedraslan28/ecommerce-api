@@ -240,18 +240,13 @@ class PasswordReset(generics.GenericAPIView):
         try:
             user = User.objects.get(email=email)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            # Set expiration time to 30 minutes from now
-            expiration_time = datetime.now() + timedelta(minutes=1)
-            date_time = expiration_time.strftime("%y-%m-%d, %H:%M:%S")
-            print('expire = ', expiration_time)
-            print('-----------------------------')
-            print(date_time)
+
             token = default_token_generator.make_token(user)
             reset_url = f"http://localhost:8000//api/auth/reset-password/{uid}/{token}"
             send_mail(
                 'Reset Your Password',
                 f'Please click on this link to reset your password: {reset_url}',
-                settings.DEFAULT_FROM_EMAIL,
+                settings.EMAIL_HOST_USER,
                 [email],
             )
         except User.DoesNotExist:
