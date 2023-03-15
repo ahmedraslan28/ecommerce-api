@@ -2,6 +2,7 @@
 
 this is the complete backend project for Ecommerce store.  It mimics the complete Ecommerce API behaviour.
 
+![image](Github-images/home.jpg)
 
 ## About
 
