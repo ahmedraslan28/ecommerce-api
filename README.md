@@ -75,7 +75,7 @@ replace the name and password with your own name and password
 ## Database Seeds
 
 To seed an empty database before running the project you should run `python manage.py seed_db`, this will use the prewritten seeds stored in \
-`store/management/commands` to seed your local database and create a group of products and collections 
+`store/management/commands` to seed your local database and create a group of products and collections and customers
 
 
 ## API Documentation
@@ -86,3 +86,13 @@ I use `Postman` for generating the API documentation, so the documentation is ho
 ## Database Design
 
 This eCommerce backend application uses a MySql database with the following tables.
+
+
+## For testers
+
+When you use the seeds `python manage.py seed_db` you can use the following users to test:
+
+| username           | Password | Type   |
+| ----------------- | -------- | ------ | 
+| admin   | 1234 | admin   | 
+| user    | 1234 | user    | 
