@@ -88,7 +88,7 @@ I use `Postman` for generating the API documentation, so the documentation is ho
 
 This eCommerce backend application uses a MySql database with the following tables.
 
-view it online: [DB Model](https://dbdiagram.io/d/6062e295ecb54e10c33de73e) and not locally.
+view it online: [DB Model](https://dbdiagram.io/d/6062e295ecb54e10c33de73e) .
 
 ![image](Github-images/database_modeling.png)
 
