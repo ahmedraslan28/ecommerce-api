@@ -73,7 +73,7 @@ replace the name and password with your on name and password
 
 ## Database Seeds
 
-To seed an empty database before running the project you should run `python manage.py seed.db`, this will use the prewritten seeds stored in \
+To seed an empty database before running the project you should run `python manage.py seed_db`, this will use the prewritten seeds stored in \
 `store/management/commands` to seed your local database.
 
 
