@@ -1,7 +1,6 @@
 # Ecommerce-Api
 
-this is the complete backend project for Ecommerce store.\
-It mimics the complete Ecommerce API behaviour.
+this is the complete backend project for Ecommerce store.  It mimics the complete Ecommerce API behaviour.
 
 
 ## About
