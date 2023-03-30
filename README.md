@@ -4,7 +4,7 @@ this is the complete backend project for Ecommerce store. It mimics the complete
 
 ## About
 
-This eCommerce backend application is built using Dajngo and the Django Rest Framework framework. It provides a RESTful API for managing products, orders, and customers in an online store.
+This eCommerce backend application is built using Dajngo and the Django Rest Framework. It provides a RESTful API for managing products, orders, and customers in an online store.
 
 ## Features
 
